@@ -1,6 +1,9 @@
 import streamlit as st
 import datetime
+from datetime import timedelta
 from src.database_functions import add_task_data
+from src.notifications import schedule_notifications
+import re
 
 st.set_page_config(page_title="Add Task")
 
@@ -21,19 +24,22 @@ time_range = st.slider(
     value=(datetime.time(8, 0), datetime.time(18, 0)),
     min_value=datetime.time(0, 0),
     max_value=datetime.time(23, 59),
-    format="HH:mm"
+    format="HH:mm",
+    step = timedelta(minutes = 5)
 )
 
 add_task_ = st.text_input('Add Task')
-priority = st.selectbox(
-        "Select Priority..",
-        ('1', '2', '3'),
-        index=None
-        )
 
-st.markdown(":red[Priority 1]")
-st.markdown(":orange[Priority 2]")
-st.markdown(":green[Priority 3]")
+emails = st.text_area("Enter invitees emails, separated by commas:")
+
+st.write('The invitees will get the mail regarding the task')
+
+priority_option = st.radio(
+    "Select Priority..",
+    key="priority",
+    options=[":red[Priority 1]", ":orange[Priority 2]", ":green[Priority 3]"],
+)
+priority = re.search(r'\d+', priority_option).group(0)
 
 alert = st.selectbox(
         "Alert Message..",
@@ -88,9 +94,14 @@ if st.button('Add The Task'):
                 "end": end.strftime('%Y-%m-%d') + 'T' + time_range[1].strftime("%H:%M:%S"),
                 "priority": priority,
                 "is_completed":False,
-                "alert":alert_time
+                "alert":alert_time,
+                "emails":emails
         }
-        if add_task_data(data):
+        task_id = add_task_data(data)
+        if task_id:
             st.success("Task Added in Calendar!")
+            data['id'] = task_id
+            data['key'] = 'add'
+            schedule_notifications(data)
         else:
             st.error('Task Not Added!')

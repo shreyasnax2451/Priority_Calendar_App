@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reminder Email</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            border: 1px solid #ddd;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+
+        p {
+            margin-bottom: 15px;
+        }
+
+        .button {
+            background-color: #007bff; /* Customize this color */
+            color: #fff;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            display: block;
+            margin: 15px auto;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <p>Hey [Recipient Name],</p>
+        <p>Oh No! You missed this [Event Name] scheduled for [date] at [time].</p>
+        <p>Don't Worry! Calendar will shift your task to next day at [time].</p>
+        <p>Please Complete The Task!</p>
+        <!-- <p><b>Important details:</b></p>
+        <ul>
+            <li> [Detail 1] </li>
+            <li> [Detail 2] </li>
+            </ul> -->
+
+        <a href="http://localhost:8501/" class="button">View Event</a> 
+
+        <!-- <p>If you have any questions, please reply to this email.</p> -->
+
+        <p>Sincerely,</p>
+        <p>Your Calendar!</p>
+    </div>
+</body>
+</html>
