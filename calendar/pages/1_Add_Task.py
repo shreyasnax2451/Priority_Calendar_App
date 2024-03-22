@@ -21,18 +21,14 @@ selected_dates = st.date_input(
 
 time_range = st.slider(
     "Select time range",
-    value=(datetime.time(8, 0), datetime.time(18, 0)),
+    value=(datetime.time(10, 0), datetime.time(13, 0)),
     min_value=datetime.time(0, 0),
     max_value=datetime.time(23, 59),
     format="HH:mm",
-    step = timedelta(minutes = 5)
+    step = timedelta(minutes = 2)
 )
 
-add_task_ = st.text_input('Add Task')
-
-emails = st.text_area("Enter invitees emails, separated by commas:")
-
-st.write('The invitees will get the mail regarding the task')
+task_title = st.text_input('Title of the Task')
 
 priority_option = st.radio(
     "Select Priority..",
@@ -41,37 +37,52 @@ priority_option = st.radio(
 )
 priority = re.search(r'\d+', priority_option).group(0)
 
-alert = st.selectbox(
-        "Alert Message..",
-        ("At event's time", 
-         '15 minutes before', 
-         '30 minutes before',
-         '45 minutes before',
-         '1 hour before',
-         '2 hours before',
-         'Custom'),
-        index=None
-        )
+emails = st.text_area("Enter invitees emails, separated by commas:")
+st.write('Invitees will get the mail regarding the task')
 
-if alert:
-    if alert == 'Custom':
-        col1, col2 = st.columns(2)
-        with col1:
-            alert_time = st.number_input("Enter alert time")
-        with col2:
-            alert_unit = st.selectbox('Minutes or Hours', ('minutes', 'hours'), index = None)
-    elif 'event' in alert:
-        alert_time = 0
-        alert_unit = 'minutes'
-    else:
-        alert_time = int(alert.split(' ')[0])
-        if 'minutes' in alert:
+alert_time = None
+
+alert_permission = st.radio(
+    "Need to send an alert?",
+    ["Yes","No"],
+    index=None,
+)
+
+if alert_permission == 'Yes':
+    alert_options = (
+        "At event's time", 
+        '15 minutes before', 
+        '30 minutes before',
+        '45 minutes before',
+        '1 hour before',
+        '2 hours before',
+        'Custom'
+    )
+    alert = st.selectbox(
+            "Send Alert..",
+            alert_options,
+            index=None,
+            placeholder='Notification Alert Time'
+            )
+    if alert:
+        if alert == 'Custom':
+            col1, col2 = st.columns(2)
+            with col1:
+                alert_time = st.number_input("Enter alert time", step = 1)
+            with col2:
+                alert_unit = st.selectbox('Minutes or Hours', ('minutes', 'hours'), index = None)
+        elif alert == "At event's time":
+            alert_time = 0
             alert_unit = 'minutes'
-        elif 'hour' in alert or 'hours' in alert:
-            alert_unit = 'hours'
+        else:
+            alert_time = int(alert.split(' ')[0])
+            if 'minutes' in alert:
+                alert_unit = 'minutes'
+            elif 'hour' in alert:
+                alert_unit = 'hours'
 
-    if alert_unit == 'hours':
-        alert_time = alert_time*60
+        if alert_unit == 'hours':
+            alert_time = alert_time*60
 
 if st.button('Add The Task'):
     if len(selected_dates) == 1:
@@ -80,15 +91,15 @@ if st.button('Add The Task'):
         start = selected_dates[0]
         end = selected_dates[1]
 
-    if not add_task_:
+    if not task_title:
         st.warning('Please Type Task Name',icon="⚠️")
 
     if not priority:
         st.warning('Please select Priority', icon="⚠️")
 
-    if priority and add_task_:
+    if priority and task_title:
         data = {
-                "title": add_task_,
+                "title": task_title,
                 "color": "#FFBD45",
                 "start": start.strftime('%Y-%m-%d') + 'T' + time_range[0].strftime("%H:%M:%S"),
                 "end": end.strftime('%Y-%m-%d') + 'T' + time_range[1].strftime("%H:%M:%S"),

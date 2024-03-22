@@ -2,3 +2,4 @@ streamlit_calendar
 streamlit
 sqlalchemy
 schedule
+apscheduler

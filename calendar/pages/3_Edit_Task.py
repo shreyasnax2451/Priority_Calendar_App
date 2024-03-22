@@ -17,6 +17,7 @@ selected_task = st.selectbox(
    index=None,
    placeholder="Select Task...",
 )
+
 edit_params = {}
 for param in tasks_data:
     if param['title'] == selected_task:
@@ -35,13 +36,12 @@ if task_edit == 'Change Priority':
     ('1', '2', '3'),
     index=None
     )
-    is_completed = False
     edit_params = edit_params | {
         'priority':priority,
-        'is_completed':is_completed
+        'is_completed':False
     }
 elif task_edit == 'Change Timings of Task':
-    start, end, alert = [(task['start'], task['end'], task['alert']) for task in tasks_data if task['title'] == selected_task][0]
+    start, end = [(task['start'], task['end']) for task in tasks_data if task['title'] == selected_task][0]
 
     start_date = datetime.datetime.strptime(start, '%Y-%m-%dT%H:%M:%S')
     end_date = datetime.datetime.strptime(end, '%Y-%m-%dT%H:%M:%S')
@@ -69,13 +69,17 @@ elif task_edit == 'Change Timings of Task':
 
     edit_params = edit_params | {
         'start' : start.strftime('%Y-%m-%d') + 'T' + edited_time_range[0].strftime("%H:%M:%S"),
-        'end' : end.strftime('%Y-%m-%d') + 'T' + edited_time_range[1].strftime("%H:%M:%S"),
-        'alert':alert
+        'end' : end.strftime('%Y-%m-%d') + 'T' + edited_time_range[1].strftime("%H:%M:%S")
     }
+
 elif task_edit == 'Change Invitees':
     new_emails = st.text_input('Edit Invitees', value=edit_params['emails'])
-    edit_params = edit_params | {'emails':new_emails, 'emails_change': True}
-else:
+    edit_params = edit_params | {
+        'emails':new_emails, 
+        'emails_change': True
+    }
+
+elif task_edit == 'Change Task Status to completed':
     edit_params = edit_params | {
         'is_completed':True
     }

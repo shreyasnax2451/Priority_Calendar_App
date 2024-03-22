@@ -9,9 +9,7 @@ if not tasks:
     st.write('Hurray! No Pending Tasks!')
 else:
     for task in tasks:
-        col1, col2 = st.columns([2, 1])
-        with col1:
-            st.subheader(task["title"])
+        st.subheader(task["title"])
         with st.expander('Details'):
             st.write('Invitees: ', task["emails"])
             if task['color'] == "#FF6C6C":

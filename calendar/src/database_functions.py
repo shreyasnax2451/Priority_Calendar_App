@@ -2,7 +2,6 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base
 from sqlalchemy import Column, Integer, String, Boolean
 from sqlalchemy.orm import sessionmaker
-from datetime import datetime, timedelta
 
 engine = create_engine('sqlite:///calendar_tasks.db')
 Base = declarative_base()
@@ -26,10 +25,8 @@ Session = sessionmaker(bind=engine)
 session = Session()
 
 def get_tasks_data(key = 'incomplete'):
-    if key == 'completed':
-        task_query = session.query(Task).filter(Task.is_completed == True).all()
-    else:
-        task_query = session.query(Task).filter(Task.is_completed == False).all()
+    """ Get the tasks data"""
+    task_query = session.query(Task).filter(Task.is_completed == (key == 'completed')).all()
     tasks = []
     for obj in task_query:
         row = {
@@ -39,7 +36,8 @@ def get_tasks_data(key = 'incomplete'):
             'alert':obj.alert,
             'schedule_job_id':obj.schedule_job_id,
             'schedule_job_id_2':obj.schedule_job_id_2,
-            'emails':obj.emails
+            'emails':obj.emails,
+            'priority':obj.priority
         }
         if obj.priority == '1':
             row["color"] = "#FF6C6C"
@@ -70,23 +68,21 @@ def add_task_data(task_data):
     return task_id
 
 def edit_task(edit_params):
-    """ Edit the priority of a Task"""
+    """ Edit the timings, priority, status or invitees of a Task"""
     task = session.query(Task).filter_by(title=edit_params['title']).first()
-    if edit_params.get('priority'):
-        task.priority = edit_params['priority']
-    elif edit_params.get('is_completed'):
-        task.is_completed = True
-    elif edit_params.get('emails_change'):
-        task.emails = edit_params['emails']
-    else:
-        task.start = edit_params['start']
-        task.end = edit_params['end']
+
+    task.priority = edit_params['priority']
+    task.is_completed = edit_params['is_completed']
+    task.emails = edit_params['emails']
+    task.start = edit_params['start']
+    task.end = edit_params['end']
     session.commit()
     task_id = task.id
     session.close()
     return task_id
 
 def delete_task(delete_params):
+    """Delete a Task"""
     task_to_delete = session.query(Task).filter(Task.title == delete_params['title']).first()
     if task_to_delete:
         session.delete(task_to_delete)
