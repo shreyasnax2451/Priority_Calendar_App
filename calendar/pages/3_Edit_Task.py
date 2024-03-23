@@ -59,7 +59,7 @@ elif task_edit == 'Change Timings of Task':
         min_value=datetime.time(0, 0),
         max_value=datetime.time(23, 59),
         format="HH:mm",
-        step = timedelta(minutes = 5)
+        step = timedelta(minutes = 2)
     )
     if len(edited_dates) == 1:
         start = end = edited_dates[0]
@@ -89,7 +89,7 @@ if st.button('Edit Task'):
     if edited_id:
         edit_params['id'] = edited_id
         edit_params['key'] = 'edit'
-        if task_edit != 'Change Priority':
+        if task_edit != 'Change Priority' and edit_params['alert']:
             schedule_notifications(edit_params)
         st.success("Task Edited in Calendar!")
     else:

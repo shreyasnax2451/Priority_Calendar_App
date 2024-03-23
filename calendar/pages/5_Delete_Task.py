@@ -30,7 +30,8 @@ if st.button('Delete this Task'):
         delete_params = delete_params | {
             'key':'delete'
         }
-        schedule_notifications(delete_params)
+        if delete_params['alert']:
+            schedule_notifications(delete_params)
         st.success("Task Deleted! Please check the calendar")
     else:
         st.error('Task Not Edited!')

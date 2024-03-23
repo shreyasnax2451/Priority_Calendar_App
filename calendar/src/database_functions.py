@@ -37,7 +37,8 @@ def get_tasks_data(key = 'incomplete'):
             'schedule_job_id':obj.schedule_job_id,
             'schedule_job_id_2':obj.schedule_job_id_2,
             'emails':obj.emails,
-            'priority':obj.priority
+            'priority':obj.priority,
+            'is_completed':obj.is_completed
         }
         if obj.priority == '1':
             row["color"] = "#FF6C6C"

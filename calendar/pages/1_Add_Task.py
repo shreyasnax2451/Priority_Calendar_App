@@ -113,6 +113,7 @@ if st.button('Add The Task'):
             st.success("Task Added in Calendar!")
             data['id'] = task_id
             data['key'] = 'add'
-            schedule_notifications(data)
+            if alert_time:
+                schedule_notifications(data)
         else:
             st.error('Task Not Added!')
