@@ -1,13 +1,26 @@
 import os
+import re
+import smtplib
+import functools
+import logging
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-import smtplib
 
-def send_email(email, html_content, subject):
+logger = logging.getLogger(__name__)
+
+def send_email(email: str, html_content: str, subject: str, data: dict) -> bool:
     try:
-        sender_email = os.environ['EMAIL_ADDRESS_SMPT']
+        date, time = data['start'].split('T')
+        placeholders = {
+                'event_name':data['title'],
+                'date':date,
+                'time':time
+        }
+        partial_replacer = functools.partial(replace_placeholders, placeholders=placeholders)
+        html_content = re.sub('{{(.*?)}}', partial_replacer, html_content)
+        sender_email = os.environ["EMAIL_ADDRESS_SMPT"]
         recipient_email = email
-        password = os.environ['PASSWORD_SMPT']
+        password = os.environ["PASSWORD_SMPT"]
 
         message = MIMEMultipart("alternative")
         message["Subject"] = subject
@@ -20,7 +33,11 @@ def send_email(email, html_content, subject):
         with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
             server.login(sender_email, password)
             server.sendmail(sender_email, recipient_email, message.as_string())
-            print("Reminder email sent successfully!")
+            logger.info("Reminder email sent successfully!")
+        return True
     except Exception as e:
-        print(e)
-        print('Email Failed!')
+        logger.exception(e)
+
+def replace_placeholders(match, placeholders):
+    key = match.group(1)
+    return placeholders.get(key, f'<{key} not found>')
