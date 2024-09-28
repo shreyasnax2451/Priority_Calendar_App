@@ -5,7 +5,7 @@ from src.database_functions import get_tasks_data
 
 st.set_page_config(page_title="Calendar App")
 
-st.title('Calendar App')
+st.title("Calendar App")
 
 events = get_tasks_data()
 
@@ -18,11 +18,7 @@ calendar_options = {
 
 mode = st.selectbox(
     "Calendar Mode:",
-    (
-        "daygrid",
-        "timegrid",
-        "list"
-    ),
+    ("daygrid", "timegrid", "list"),
 )
 
 if mode == "daygrid":
@@ -33,7 +29,7 @@ if mode == "daygrid":
             "center": "title",
             "right": "dayGridDay,dayGridWeek,dayGridMonth",
         },
-        "initialDate": datetime.datetime.today().strftime('%Y-%m-%d'),
+        "initialDate": datetime.datetime.today().strftime("%Y-%m-%d"),
         "initialView": "dayGridMonth",
     }
 elif mode == "timegrid":
@@ -49,13 +45,13 @@ elif mode == "timeline":
             "center": "title",
             "right": "timelineDay,timelineWeek,timelineMonth",
         },
-        "initialDate": datetime.datetime.today().strftime('%Y-%m-%d'),
+        "initialDate": datetime.datetime.today().strftime("%Y-%m-%d"),
         "initialView": "timelineMonth",
     }
 elif mode == "list":
     calendar_options = {
         **calendar_options,
-        "initialDate": datetime.datetime.today().strftime('%Y-%m-%d'),
+        "initialDate": datetime.datetime.today().strftime("%Y-%m-%d"),
         "initialView": "listMonth",
     }
 
