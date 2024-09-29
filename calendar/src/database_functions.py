@@ -74,7 +74,7 @@ def add_task_data(task_data: dict):
         .all()
     )
     if active_task_exists:
-        st.error(f"Task already exists with name {task_data["title"]}")
+        st.error(f"Task already exists with name {task_data['title']}")
         return
 
     new_task = Task(
